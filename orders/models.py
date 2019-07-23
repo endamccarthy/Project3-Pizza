@@ -1,6 +1,13 @@
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 # Create your models here.
+class Meal_Type(models.Model):
+    type = models.CharField(max_length=64)
+
+    def __str__(self):
+        return f"{self.type}"
+
 class Pizza_Type(models.Model):
     type = models.CharField(max_length=64)
 
@@ -51,8 +58,9 @@ class Size(models.Model):
 
 class Pizza(models.Model):
     type = models.ForeignKey(Pizza_Type, on_delete=models.CASCADE, related_name="pizza_type")
-    toppings = models.ForeignKey(Pizza_Topping, on_delete=models.CASCADE, related_name="pizza_toppings")
     size = models.ForeignKey(Size, on_delete=models.CASCADE, related_name="pizza_size")
+    toppings = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(3)])
+    price = models.FloatField(validators=[MinValueValidator(0)], default=0)
 
     def __str__(self):
-        return f"{self.size} {self.type} pizza with {self.toppings}"
+        return f"{self.size} {self.type} pizza with {self.toppings} toppings (${self.price})"
