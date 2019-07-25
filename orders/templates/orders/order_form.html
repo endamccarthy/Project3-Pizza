@@ -8,7 +8,8 @@
 
   <h2>Order Form</h2>
 
-  <form method="post" id="orderForm" data-meal_types-url="{% url 'ajax_load_meal_types' %}" novalidate>
+  <form method="post" id="orderForm" data-meal_type-url="{% url 'ajax_load_meal_type' %}" data-size-url="{% url 'ajax_load_size' %}" 
+   data-meal_addition-url="{% url 'ajax_load_meal_addition' %}" novalidate>
     {% csrf_token %}
     <table>
       {{ form.as_table }}
