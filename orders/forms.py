@@ -15,6 +15,6 @@ class OrderForm(forms.ModelForm):
                 meal_id = int(self.data.get('meal'))
                 self.fields['meal_type'].queryset = Meal_Type.objects.filter(meal_id=meal_id).order_by('meal')
             except (ValueError, TypeError):
-                pass  # invalid input from the client; ignore and fallback to empty City queryset
+                pass  # invalid input from the client; ignore and fallback to empty queryset
         elif self.instance.pk:
             self.fields['meal_type'].queryset = self.instance.meal.meal_type_set.order_by('meal')

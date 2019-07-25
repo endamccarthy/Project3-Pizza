@@ -3,11 +3,26 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <!-- configure  -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+        <!-- CSS -->
+        <link rel="stylesheet" type="text/css" href="{% static 'orders/style.css' %}">
+
+        <!--  JS -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="{% static 'orders/base.js' %}"></script>
+
         <title>{% block title %}{% endblock %}</title>
-        <link rel="stylesheet" href="{% static 'orders/styles.css' %}"/>
     </head>
     <body>
         {% block body %}
         {% endblock %}
+        <div class="footer">
+            <div class="line"></div>
+            <p>Copyright &#169; 2019 Enda McCarthy</p>
+        </div>
     </body>
 </html>

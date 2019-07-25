@@ -11,29 +11,10 @@
   <form method="post" id="orderForm" data-meal_types-url="{% url 'ajax_load_meal_types' %}" novalidate>
     {% csrf_token %}
     <table>
-      {{ form_class.as_table }}
+      {{ form.as_table }}
     </table>
     <button type="submit">Save</button>
     <a href="{% url 'index' %}">Nevermind</a>
   </form>
-
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-  <script>
-    $("#id_meal").change(function () {
-      var url = $("#orderForm").attr("data-meal_types-url");
-      var mealId = $(this).val();
-
-      $.ajax({
-        url: url,
-        data: {
-          'meal': mealId
-        },
-        success: function (data) {
-          $("#id_meal_type").html(data);
-        }
-      });
-
-    });
-  </script>
 
 {% endblock %}

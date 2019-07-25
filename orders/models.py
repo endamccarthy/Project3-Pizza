@@ -67,8 +67,8 @@ class Pizza(models.Model):
         return f"{self.size} {self.name} pizza with {self.toppings} toppings (${self.price})"
 
 class Order(models.Model):
-    meal = models.ForeignKey(Meal, on_delete=models.CASCADE, null=True, related_name="meal")
-    meal_type = models.ForeignKey(Meal_Type, on_delete=models.CASCADE, null=True, related_name="meal_type")
+    meal = models.ForeignKey(Meal, on_delete=models.SET_NULL, null=True)
+    meal_type = models.ForeignKey(Meal_Type, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return f"{self.meal_type} {self.meal_type}"

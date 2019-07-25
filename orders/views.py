@@ -11,22 +11,24 @@ def index(request):
         "meal": Meal.objects.all()
     }
     return render(request, "orders/index.html", context)
-
+'''
 def order(request):
     model = Order
     form_class = OrderForm
+    success_url = reverse_lazy('index')
     context = {
         "model": model,
-        "form_class": form_class
+        "form_class": form_class,
+        "success_url": success_url
     }
     return render(request, "orders/order_form.html", context)
-
 '''
+
 class OrderCreateView(CreateView):
     model = Order
     form_class = OrderForm
-    success_url = reverse_lazy('order_add')
-'''
+    success_url = reverse_lazy('index')
+
 
 def load_meal_types(request):
     meal_id = request.GET.get('meal')
