@@ -1,5 +1,4 @@
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
 
 # Create your models here.
 class Meal(models.Model):
@@ -8,45 +7,45 @@ class Meal(models.Model):
     def __str__(self):
         return f"{self.name}"
 
-class Meal_Type(models.Model):
+class Meal_Addition(models.Model):
     name = models.CharField(max_length=64)
-    meal = models.ForeignKey(Meal, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return f"{self.name}"
 
 class Size(models.Model):
     size = models.CharField(max_length=64)
-    meal = models.ForeignKey(Meal, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return f"{self.size}"
 
-class Meal_Addition(models.Model):
+class Meal_Type(models.Model):
     name = models.CharField(max_length=64)
     meal = models.ForeignKey(Meal, on_delete=models.CASCADE, null=True)
-    meal_type = models.ManyToManyField(Meal_Type)
-
+    size = models.ManyToManyField(Size)
+    meal_addition = models.ManyToManyField(Meal_Addition, blank=True)
+    
     def __str__(self):
         return f"{self.name}"
+
+class Price(models.Model):
+    price = models.FloatField(default = 0)
+    meal_type = models.ManyToManyField(Meal_Type)
+    size = models.ForeignKey(Size, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        # extract values from list of meal types and convert them to a string
+        l = list(self.meal_type.values_list('name', flat=True))
+        s = [str(i) for i in l] 
+        meal_types_list = ", ".join(s)
+
+        return f"{self.size} ({meal_types_list}) (${self.price})"
 
 class Order(models.Model):
     meal = models.ForeignKey(Meal, on_delete=models.SET_NULL, null=True)
     meal_type = models.ForeignKey(Meal_Type, on_delete=models.SET_NULL, null=True)
     size = models.ForeignKey(Size, on_delete=models.SET_NULL, null=True)
-    meal_addition = models.ManyToManyField(Meal_Addition)
+    meal_addition = models.ManyToManyField(Meal_Addition, blank=True)
 
     def __str__(self):
         return f"{self.meal_type}"
-
-
-'''
-class Pizza(models.Model):
-    name = models.ForeignKey(Meal_Type, on_delete=models.CASCADE, related_name="meal_type1")
-    size = models.ForeignKey(Size, on_delete=models.CASCADE, related_name="pizza_size")
-    toppings = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(3)])
-    price = models.FloatField(validators=[MinValueValidator(0)], default=0)
-
-    def __str__(self):
-        return f"{self.size} {self.name} pizza with {self.toppings} toppings (${self.price})"
-'''
