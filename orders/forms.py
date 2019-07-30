@@ -1,5 +1,5 @@
 from django import forms
-from .models import Order, Meal_Type, Size, Meal_Addition
+from .models import Order, Meal_Type, Size, Meal_Addition, Price
 
 class OrderForm(forms.ModelForm):
     class Meta:
@@ -32,11 +32,35 @@ class OrderForm(forms.ModelForm):
                 pass  # invalid input from the client; ignore and fallback to empty queryset
         elif self.instance.pk:
             self.fields['size'].queryset = self.instance.meal_type.size_set.order_by('size')
-            self.fields['meal_addition'].queryset = self.instance.meal_type.meal_addition_set.order_by('meal')
+            self.fields['meal_addition'].queryset = self.instance.meal_type.meal_addition_set.order_by('name')
 
     # limit the amount of meal additions to 3
     def clean_meal_addition(self):
         meal_addition = self.cleaned_data['meal_addition']
-        if len(meal_addition) > 3:
-            raise forms.ValidationError('You can add maximum 3 toppings')
+        meal_type = self.cleaned_data['meal_type']
+        meal = str(self.cleaned_data['meal'])
+        if 'Pizza' in meal:
+            if '1 topping' in str(meal_type):
+                if len(meal_addition) != 1:
+                    raise forms.ValidationError('You must select 1 topping')
+            if '2 toppings' in str(meal_type):
+                if len(meal_addition) != 2:
+                    raise forms.ValidationError('You must select 2 toppings')
+            if '3 toppings' in str(meal_type):
+                if len(meal_addition) != 3:
+                    raise forms.ValidationError('You must select 3 toppings')
+
+        size = self.cleaned_data['size']
+        price1 = Price.objects.filter(meal_type=meal_type, size=size)
+        price = float()
+        for p in price1:
+            print(p.price)
+            price = float(p.price)
+        print(price)
+        
+        if 'Sub' in meal:
+            for item in meal_addition:
+                price = price + float(item.price)
+
+        print(price)
         return meal_addition
