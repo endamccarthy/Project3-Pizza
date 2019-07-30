@@ -17,4 +17,13 @@
     <button type="submit">Save</button>
   </form>
 
+  {% if menu %}
+    {% for key in menu %}
+      <h4>{{ key }}</h4>
+      {% for item in menu|get_item:key %}
+        <p>{{ item }}</p>
+      {% endfor %}
+    {% endfor %}
+  {% endif %}
+
 {% endblock %}

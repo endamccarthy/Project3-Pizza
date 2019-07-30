@@ -22,7 +22,8 @@ class OrderForm(forms.ModelForm):
                 pass  # invalid input from the client; ignore and fallback to empty queryset
         elif self.instance.pk:
             self.fields['meal_type'].queryset = self.instance.meal.meal_type_set.order_by('meal')
-
+        
+        # if a meal type has been selected from the dropdown menu....
         if 'meal_type' in self.data:
             try:
                 meal_type = int(self.data.get('meal_type'))
@@ -34,11 +35,14 @@ class OrderForm(forms.ModelForm):
             self.fields['size'].queryset = self.instance.meal_type.size_set.order_by('size')
             self.fields['meal_addition'].queryset = self.instance.meal_type.meal_addition_set.order_by('name')
 
-    # limit the amount of meal additions to 3
+    # validate the number of toppings and get the total price of the order
     def clean_meal_addition(self):
         meal_addition = self.cleaned_data['meal_addition']
         meal_type = self.cleaned_data['meal_type']
+        size = self.cleaned_data['size']
         meal = str(self.cleaned_data['meal'])
+
+        # if a pizza is selected then validate the number of toppings
         if 'Pizza' in meal:
             if '1 topping' in str(meal_type):
                 if len(meal_addition) != 1:
@@ -50,17 +54,16 @@ class OrderForm(forms.ModelForm):
                 if len(meal_addition) != 3:
                     raise forms.ValidationError('You must select 3 toppings')
 
-        size = self.cleaned_data['size']
-        price1 = Price.objects.filter(meal_type=meal_type, size=size)
-        price = float()
-        for p in price1:
-            print(p.price)
-            price = float(p.price)
-        print(price)
+        # get the price for the meal type selected
+        meal_price = Price.objects.filter(meal_type=meal_type, size=size)
+        total_price = float()
+        for item in meal_price:
+            total_price = float(item.price)
         
+        # if the meal type is a sub then add the cost of any additions to the total price
         if 'Sub' in meal:
             for item in meal_addition:
-                price = price + float(item.price)
+                total_price = total_price + float(item.price)
 
-        print(price)
+        print(total_price)
         return meal_addition

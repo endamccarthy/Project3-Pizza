@@ -51,7 +51,4 @@ class Order(models.Model):
     meal_addition = models.ManyToManyField(Meal_Addition, blank=True)
 
     def __str__(self):
-        price1 = Price.objects.filter(meal_type=self.meal_type, size=self.size)
-        print([p.price for p in price1])
-        return f"{price1}"
-        #return f"{self.size} {self.meal_type}"
+        return f"{self.size} {self.meal_type}"

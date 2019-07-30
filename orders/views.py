@@ -4,6 +4,12 @@ from django.views.generic import CreateView
 from django.urls import reverse_lazy
 from .models import Meal, Order, Meal_Type, Size, Meal_Addition
 from .forms import OrderForm
+from django.template.defaulttags import register
+
+
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key)
 
 # Create your views here.
 
@@ -12,6 +18,20 @@ class OrderCreateView(CreateView):
     model = Order
     form_class = OrderForm
     success_url = reverse_lazy('order_add')
+
+    # pass data into html page
+    def get_context_data(self, **kwargs):
+        context = super(CreateView, self).get_context_data(**kwargs)
+        # get menu data and pass into context
+        menu = {}
+        for item in Meal.objects.all():
+            l = list(Meal_Type.objects.filter(meal=item).order_by('name'))
+            meal_types_list = [str(i) for i in l]
+            menu[item.name] = meal_types_list
+        context['menu'] = menu
+        context['sizes'] = Size.objects.all()
+        context['meal_additions'] = Meal_Addition.objects.all()
+        return context
 
 # order form dropdown menu - meal types
 def load_meal_type(request):
