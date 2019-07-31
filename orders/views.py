@@ -2,11 +2,11 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic import CreateView
 from django.urls import reverse_lazy
-from .models import Meal, Order, Meal_Type, Size, Meal_Addition
+from .models import Meal, Order, Meal_Type, Size, Meal_Addition, Price
 from .forms import OrderForm
 from django.template.defaulttags import register
 
-
+# used to extract values from menu dictionary on the html page
 @register.filter
 def get_item(dictionary, key):
     return dictionary.get(key)
@@ -24,13 +24,26 @@ class OrderCreateView(CreateView):
         context = super(CreateView, self).get_context_data(**kwargs)
         # get menu data and pass into context
         menu = {}
+        price = {}
+        count = 0
         for item in Meal.objects.all():
             l = list(Meal_Type.objects.filter(meal=item).order_by('name'))
             meal_types_list = [str(i) for i in l]
             menu[item.name] = meal_types_list
-        context['menu'] = menu
-        context['sizes'] = Size.objects.all()
-        context['meal_additions'] = Meal_Addition.objects.all()
+        for item in Price.objects.all():
+            l = list(item.meal_type.values_list('name', flat=True))
+            meal_types_by_price_list = [str(i) for i in l]
+            price[count] = [(meal_types_by_price_list)]
+            price[count].append(item.size)
+            price[count].append(item.price)
+            count +=1
+        print(price)
+        context = {
+            "menu": menu,
+            "sizes": Size.objects.all(),
+            "meal_additions": Meal_Addition.objects.all(),
+            "prices": price
+        }
         return context
 
 # order form dropdown menu - meal types
