@@ -1,3 +1,28 @@
 .table th {
-    text-align: center;   
- }
+    text-align: center;
+    background: #70c5fd
+}
+
+#menu-title {
+    background: #026bb1;
+}
+
+.content-section {
+    border: 5px solid #b1b1b1;
+    margin-top: 75px;
+    margin-left: 75px;
+    margin-right: 75px;
+}
+
+.table {
+    margin-bottom: 0px;
+}
+
+.footer {
+    position: relative;
+    width: 100%;
+    text-align: center;
+    padding-bottom: 5px;
+    padding-top: 30px;
+    font-size: 0.8em;
+}

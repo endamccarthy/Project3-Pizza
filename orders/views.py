@@ -24,8 +24,7 @@ class OrderCreateView(CreateView):
         context = super(CreateView, self).get_context_data(**kwargs)
         # get menu data and pass into context
         menu = {}
-        price = {}
-        count = 0
+        price= []
         for item in Meal.objects.all():
             l = list(Meal_Type.objects.filter(meal=item).order_by('name'))
             meal_types_list = [str(i) for i in l]
@@ -33,17 +32,16 @@ class OrderCreateView(CreateView):
         for item in Price.objects.all():
             l = list(item.meal_type.values_list('name', flat=True))
             meal_types_by_price_list = [str(i) for i in l]
-            price[count] = [(meal_types_by_price_list)]
-            price[count].append(item.size)
-            price[count].append(item.price)
-            count +=1
-        print(price)
-        context = {
-            "menu": menu,
-            "sizes": Size.objects.all(),
-            "meal_additions": Meal_Addition.objects.all(),
-            "prices": price
-        }
+            temp = {}
+            temp['size'] = item.size
+            temp['price'] = item.price
+            temp['meal_types'] = meal_types_by_price_list
+            price.append(temp)
+            
+        context['menu'] = menu
+        context['sizes'] = Size.objects.all()
+        context['meal_additions'] = Meal_Addition.objects.all()
+        context['prices'] = price
         return context
 
 # order form dropdown menu - meal types

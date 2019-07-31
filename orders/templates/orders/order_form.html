@@ -18,44 +18,35 @@
   </form>
 
   {% if menu %}
-    <table class="table table-bordered table-dark">
-      <thead>
-        <tr>
-          <th scope="row" colspan="1">Menu</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for key in menu %}
+    <div class="content-section">
+      <table class="table table-bordered table-dark">
+        <thead>
           <tr>
-            <th rowspan="2">{{ key }}</th>
-            <th colspan="3">Price</th>
+            <th scope="row" colspan="3" id="menu-title">Menu</th>
           </tr>
-            {% if sizes %}
-              <tr>
-                {% for key in sizes %}
-                  <th>{{ key }}</th>
-                {% endfor %}
-              </tr>
-            {% endif %}
-          </tr>
-          {% for item in menu|get_item:key %}
+        </thead>
+        <tbody>
+          {% for meal in menu %}
             <tr>
-              <td scope="row">{{ item }}</td>
-            </tr>
+              <th colspan="3">{{ meal }}</th>
+            {% for mealType1 in menu|get_item:meal %}
+              <tr>
+                <td scope="row">{{ mealType1 }}</td>
+                {% if prices %}
+                  {% for item in prices %}
+                    {% for mealType2 in item.meal_types %}
+                      {% if mealType2 == mealType1 %}
+                        <td>{{ item.size }} ${{ item.price }}</td>
+                      {% endif %}
+                    {% endfor %}
+                  {% endfor %}
+                {% endif %}
+              </tr>
+            {% endfor %}
           {% endfor %}
-        {% endfor %}
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+    </div>
   {% endif %}
-
-  {% if prices %}
-    {% for key in prices %}
-      <p>{{ prices|get_item:key }}</p>
-      {% for item in prices|get_item:key %}
-        <p>{{ item }}</p>
-      {% endfor %}
-    {% endfor %}
-  {% endif %}
-
 
 {% endblock %}
