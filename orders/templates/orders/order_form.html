@@ -42,6 +42,16 @@
     </div>
   </div>
 
+  {% if sub_additions %}
+    {% for item in sub_additions %}
+      {% if "*" in item %}
+        {% for item2 in sub_additions|get_item:item %}
+          <p>{{ item2 }}</p>
+        {% endfor %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+
   {% if menu %}
     <div class="row">
         <div class="menu col-md-7">
@@ -69,6 +79,19 @@
                       {% endfor %}
                     {% endif %}
                   </tr>
+                  {% if "*" in mealType1 %}
+                    {% if sub_additions %}
+                      {% for item in sub_additions %}
+                        {% if "*" in item %}
+                          {% for item2 in sub_additions|get_item:item %}
+                            <tr>
+                              <td scope="row">{{ item2 }}</td>
+                            </tr>
+                          {% endfor %}
+                        {% endif %}
+                      {% endfor %}
+                    {% endif %}
+                  {% endif %}
                 {% endfor %}
               {% endfor %}
             </tbody>

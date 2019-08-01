@@ -26,6 +26,14 @@ class OrderCreateView(CreateView):
         menu = {}
         price = []
         toppings = []
+        sub_additions = {}
+
+        for item in Meal_Type.objects.all():
+            l = list(item.meal_addition.values_list('name', flat=True))
+            meal_additions_list = [str(i) for i in l]
+            sub_additions[item.name] = meal_additions_list
+        print(sub_additions)
+
         for item in Meal.objects.all():
             l = list(Meal_Type.objects.filter(meal=item).order_by('name'))
             meal_types_list = [str(i) for i in l]
@@ -45,6 +53,7 @@ class OrderCreateView(CreateView):
         context['menu'] = menu
         context['prices'] = price
         context['toppings'] = toppings
+        context['sub_additions'] = sub_additions
         return context
 
 # order form dropdown menu - meal types
