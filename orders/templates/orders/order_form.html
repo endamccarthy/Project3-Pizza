@@ -5,47 +5,93 @@
 {% endblock %}
 
 {% block body %}
-
-  <h2>Order Form</h2>
-
-  <form method="post" id="orderForm" data-meal_type-url="{% url 'ajax_load_meal_type' %}" data-size-url="{% url 'ajax_load_size' %}" 
-   data-meal_addition-url="{% url 'ajax_load_meal_addition' %}" novalidate>
-    {% csrf_token %}
-    <table>
-      {{ form.as_table }}
-    </table>
-    <button type="submit">Save</button>
-  </form>
+  <div class="row">
+    <div class="order-form col-md-6">
+      <div class="form-heading">
+        <h4>Place Your Order: </h4>
+      </div>
+      <form method="post" id="orderForm" data-meal_type-url="{% url 'ajax_load_meal_type' %}" data-size-url="{% url 'ajax_load_size' %}" 
+        data-meal_addition-url="{% url 'ajax_load_meal_addition' %}" novalidate>
+        {% csrf_token %}
+        <div class="form-row">
+          <div class="form-group col-md-12">
+            <label for="meal" class="col-md-4">Select Meal: </label>
+            <span id="meal" class="col-md-6">{{ form.meal }}</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-12">
+            <label for="meal-type" class="col-md-4">Select Meal Type: </label>
+            <span id="meal-type" class="col-md-6">{{ form.meal_type }}</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-12">
+            <label for="size" class="col-md-4">Select Size: </label>
+            <span id="size" class="col-md-6">{{ form.size }}</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-12">
+            <label for="meal-additions" class="col-md-4">Select Meal Additions: </label>
+            <span id="meal-additions" class="col-md-6">{{ form.meal_addition }}</span>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-secondary">Save</button>
+      </form>
+    </div>
+  </div>
 
   {% if menu %}
-    <div class="content-section">
-      <table class="table table-bordered table-dark">
-        <thead>
-          <tr>
-            <th scope="row" colspan="3" id="menu-title">Menu</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for meal in menu %}
-            <tr>
-              <th colspan="3">{{ meal }}</th>
-            {% for mealType1 in menu|get_item:meal %}
+    <div class="row">
+        <div class="menu col-md-7">
+          <table class="table table-bordered table-dark">
+            <thead>
               <tr>
-                <td scope="row">{{ mealType1 }}</td>
-                {% if prices %}
-                  {% for item in prices %}
-                    {% for mealType2 in item.meal_types %}
-                      {% if mealType2 == mealType1 %}
-                        <td>{{ item.size }} ${{ item.price }}</td>
-                      {% endif %}
-                    {% endfor %}
-                  {% endfor %}
-                {% endif %}
+                <th scope="row" colspan="3" id="menu-title">Menu</th>
               </tr>
-            {% endfor %}
-          {% endfor %}
-        </tbody>
-      </table>
+            </thead>
+            <tbody>
+              {% for meal in menu %}
+                <tr>
+                  <th colspan="3">{{ meal }}</th>
+                </tr>
+                {% for mealType1 in menu|get_item:meal %}
+                  <tr>
+                    <td scope="row">{{ mealType1 }}</td>
+                    {% if prices %}
+                      {% for item in prices %}
+                        {% for mealType2 in item.meal_types %}
+                          {% if mealType2 == mealType1 %}
+                            <td>{{ item.size }} ${{ item.price }}</td>
+                          {% endif %}
+                        {% endfor %}
+                      {% endfor %}
+                    {% endif %}
+                  </tr>
+                {% endfor %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% if toppings %}
+          <div class="menu col-md-3">
+            <table class="table table-bordered table-dark">
+              <thead>
+                <tr>
+                  <th scope="row" colspan="3" id="toppings-title">Pizza Toppings</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in toppings %}
+                  <tr scope="row">
+                    <td>{{ item.name }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% endif %}
     </div>
   {% endif %}
 

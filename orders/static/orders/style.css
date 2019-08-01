@@ -1,17 +1,53 @@
+@import "https://fonts.googleapis.com/css?family=Raleway&display=swap";
+
+.navbar {
+    min-height: 60px;
+    padding: 0px 100px;
+    background: #8ed2ff;
+    border: none;
+    border-radius: 0;
+    margin-bottom: 20px;
+}
+
+body {
+    font-family: 'Raleway', sans-serif;
+}
+
+.form-heading {
+    background: #8ed2ff;
+    padding: 10px;
+}
+
 .table th {
     text-align: center;
-    background: #70c5fd
+    color: black;
+    background: #ff9ca5
 }
 
 #menu-title {
-    background: #026bb1;
+    background: #8ed2ff;
 }
 
-.content-section {
-    border: 5px solid #b1b1b1;
+#toppings-title {
+    background: #8ed2ff;
+}
+
+.order-form {
+    border: 5px solid gray;
+    margin-top: 40px;
+    margin-left: 75px;
+    padding: 0px;
+}
+
+form {
+    padding: 15px;
+}
+
+.menu {
+    border: 5px solid grey;
     margin-top: 75px;
     margin-left: 75px;
-    margin-right: 75px;
+    padding: 0px;
 }
 
 .table {

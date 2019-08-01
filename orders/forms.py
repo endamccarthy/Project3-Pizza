@@ -8,7 +8,7 @@ class OrderForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # set both dropdown menus as empty until a meal is selected from the first dropdown menu
+        # set dropdown menus as empty until a meal is selected from the first dropdown menu
         self.fields['meal_type'].queryset = Meal_Type.objects.none()
         self.fields['size'].queryset = Size.objects.none()
         self.fields['meal_addition'].queryset = Meal_Addition.objects.none()
