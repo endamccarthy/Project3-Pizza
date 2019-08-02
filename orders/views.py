@@ -32,8 +32,6 @@ class OrderCreateView(CreateView):
             l = list(item.meal_addition.values_list('name', flat=True))
             meal_additions_list = [str(i) for i in l]
             sub_additions[item.name] = meal_additions_list
-        print(sub_additions)
-
         for item in Meal.objects.all():
             l = list(Meal_Type.objects.filter(meal=item).order_by('name'))
             meal_types_list = [str(i) for i in l]
@@ -46,8 +44,8 @@ class OrderCreateView(CreateView):
             temp['price'] = item.price
             temp['meal_types'] = meal_types_by_price_list
             price.append(temp)
-        context['meal_additions'] = Meal_Addition.objects.all()
-        for item in list(context['meal_additions']):
+        meal_additions = Meal_Addition.objects.all()
+        for item in list(meal_additions):
             if "Pizza" in str(item):
                 toppings.append(item)
         context['menu'] = menu

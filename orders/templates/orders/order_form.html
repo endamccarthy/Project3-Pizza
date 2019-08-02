@@ -5,55 +5,51 @@
 {% endblock %}
 
 {% block body %}
-  <div class="row">
-    <div class="order-form col-md-6">
-      <div class="form-heading">
-        <h4>Place Your Order: </h4>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="order-form col-md-5">
+        <div class="form-heading">
+          <h4>Place Your Order: </h4>
+        </div>
+        <form method="post" id="orderForm" data-meal_type-url="{% url 'ajax_load_meal_type' %}" data-size-url="{% url 'ajax_load_size' %}" 
+          data-meal_addition-url="{% url 'ajax_load_meal_addition' %}" novalidate>
+          {% csrf_token %}
+          <div class="form-row">
+            <div class="form-group col-md-12">
+              <label for="meal" class="col-md-4">Select Meal: </label>
+              <span id="meal" class="col-md-6">{{ form.meal }}</span>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-12">
+              <label for="meal-type" class="col-md-4">Select Meal Type: </label>
+              <span id="meal-type" class="col-md-6">{{ form.meal_type }}</span>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-12">
+              <label for="size" class="col-md-4">Select Size: </label>
+              <span id="size" class="col-md-6">{{ form.size }}</span>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-12">
+              <label for="meal-additions" class="col-md-4">Select Meal Additions: </label>
+              <span id="meal-additions" class="col-md-6">{{ form.meal_addition }}</span>
+            </div>
+          </div>
+          <div class="form-row">
+              <p class="col-md-6">Total Price: <span id="total-price"></span></p>
+              <button type="submit" class="btn btn-secondary col-md-3">Place Order</button>
+          </div>
+        </form>
       </div>
-      <form method="post" id="orderForm" data-meal_type-url="{% url 'ajax_load_meal_type' %}" data-size-url="{% url 'ajax_load_size' %}" 
-        data-meal_addition-url="{% url 'ajax_load_meal_addition' %}" novalidate>
-        {% csrf_token %}
-        <div class="form-row">
-          <div class="form-group col-md-12">
-            <label for="meal" class="col-md-4">Select Meal: </label>
-            <span id="meal" class="col-md-6">{{ form.meal }}</span>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group col-md-12">
-            <label for="meal-type" class="col-md-4">Select Meal Type: </label>
-            <span id="meal-type" class="col-md-6">{{ form.meal_type }}</span>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group col-md-12">
-            <label for="size" class="col-md-4">Select Size: </label>
-            <span id="size" class="col-md-6">{{ form.size }}</span>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group col-md-12">
-            <label for="meal-additions" class="col-md-4">Select Meal Additions: </label>
-            <span id="meal-additions" class="col-md-6">{{ form.meal_addition }}</span>
-          </div>
-        </div>
-        <button type="submit" class="btn btn-secondary">Save</button>
-      </form>
     </div>
   </div>
 
-  {% if sub_additions %}
-    {% for item in sub_additions %}
-      {% if "*" in item %}
-        {% for item2 in sub_additions|get_item:item %}
-          <p>{{ item2 }}</p>
-        {% endfor %}
-      {% endif %}
-    {% endfor %}
-  {% endif %}
-
   {% if menu %}
-    <div class="row">
+    <div class="container-fluid">
+      <div class="row">
         <div class="menu col-md-7">
           <table class="table table-bordered table-dark">
             <thead>
@@ -84,15 +80,23 @@
                       {% for item in sub_additions %}
                         {% if "*" in item %}
                           {% for item2 in sub_additions|get_item:item %}
-                            <tr>
-                              <td scope="row">{{ item2 }}</td>
-                            </tr>
+                            {% if "Cheese" in item2 %}
+                            {% else %}
+                              <tr>
+                                <td scope="row">&nbsp;&nbsp;&nbsp; - Add {{ item2 }}</td>
+                              </tr>
+                            {% endif %}
                           {% endfor %}
                         {% endif %}
                       {% endfor %}
                     {% endif %}
                   {% endif %}
                 {% endfor %}
+                {% if meal == "Sub" %}
+                  <tr>
+                    <td scope="row">&nbsp;&nbsp;&nbsp; - Add Cheese to any sub (50c)</td>
+                  </tr>
+                {% endif %}
               {% endfor %}
             </tbody>
           </table>
@@ -115,6 +119,7 @@
             </table>
           </div>
         {% endif %}
+      </div>
     </div>
   {% endif %}
 

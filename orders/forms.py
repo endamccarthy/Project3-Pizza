@@ -39,7 +39,10 @@ class OrderForm(forms.ModelForm):
     def clean_meal_addition(self):
         meal_addition = self.cleaned_data['meal_addition']
         meal_type = self.cleaned_data['meal_type']
-        size = self.cleaned_data['size']
+        if 'size' in self.data:
+            size = self.cleaned_data['size']
+        else:
+            raise forms.ValidationError('You must select size')
         meal = str(self.cleaned_data['meal'])
 
         # if a pizza is selected then validate the number of toppings
