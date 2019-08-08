@@ -35,6 +35,9 @@
                     <div class="collapse navbar-collapse" id="navbarToggle">
                         <div class="navbar-nav mr-auto">
                             <a class="nav-item nav-link" href="{% url 'orders-home' %}">Home</a>
+                            {% if user.is_authenticated %}
+                                <a class="nav-item nav-link" href="{% url 'orders-create' %}">Create Order</a>
+                            {% endif %}
                         </div>
                         <!-- Navbar Right Side -->
                         <div class="navbar-nav">
@@ -61,6 +64,9 @@
                         {% endfor %}
                     {% endif %}
                     {% block content %}{% endblock %}
+                </div>
+                <div class="col-md-4">
+                    {% block sidebar %}{% endblock %}
                 </div>
             </div>
         </main>

@@ -1,7 +1,6 @@
 {% extends 'orders/base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <h2>Order Page</h2>
     <div class="content-section">
         <form method="POST" id="orderForm" data-meal_type-url="{% url 'ajax_load_meal_type' %}" data-size-url="{% url 'ajax_load_size' %}" 
          data-meal_addition-url="{% url 'ajax_load_meal_addition' %}" novalidate>
@@ -14,7 +13,7 @@
                 <span id="meal-additions">{{ form.meal_addition|as_crispy_field }}</span>
             </fieldset>
             <div class="form-group">
-                <button class="btn btn-outline-info" type="submit">Add</button>
+                <button class="btn btn-outline-info" type="submit">Add To Basket</button>
             </div>
         </form>
     </div>

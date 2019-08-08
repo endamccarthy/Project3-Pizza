@@ -4,7 +4,7 @@ from . import views
 
 urlpatterns = [
     path('', views.home, name='orders-home'),
-    path('orders/new/', OrderCreateView.as_view(), name='orders-create'),
+    path('orders/create/', OrderCreateView.as_view(), name='orders-create'),
     path('ajax/load-meal_type/', views.load_meal_type, name='ajax_load_meal_type'),
     path('ajax/load-size/', views.load_size, name='ajax_load_size'),
     path('ajax/load-meal_addition/', views.load_meal_addition, name='ajax_load_meal_addition')

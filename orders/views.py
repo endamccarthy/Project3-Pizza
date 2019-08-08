@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-from django.views.generic import CreateView
+from django.views.generic import CreateView, DetailView
 from django.urls import reverse_lazy
 from .models import Meal, Order, Meal_Type, Size, Meal_Addition, Price
 from .forms import OrderForm
@@ -17,7 +17,39 @@ def get_item(dictionary, key):
 # Create your views here.
 
 def home(request):
-    return render(request, 'orders/home.html', {'title': 'Home'})
+    # get menu data and pass into context
+    menu = {}
+    price = []
+    toppings = []
+    sub_additions = {}
+    for item in Meal_Type.objects.all():
+        l = list(item.meal_addition.values_list('name', flat=True))
+        meal_additions_list = [str(i) for i in l]
+        sub_additions[item.name] = meal_additions_list
+    for item in Meal.objects.all():
+        l = list(Meal_Type.objects.filter(meal=item).order_by('name'))
+        meal_types_list = [str(i) for i in l]
+        menu[item.name] = meal_types_list
+    for item in Price.objects.all():
+        l = list(item.meal_type.values_list('name', flat=True))
+        meal_types_by_price_list = [str(i) for i in l]
+        temp = {}
+        temp['size'] = item.size
+        temp['price'] = item.price
+        temp['meal_types'] = meal_types_by_price_list
+        price.append(temp)
+    meal_additions = Meal_Addition.objects.all()
+    for item in list(meal_additions):
+        if "Pizza" in str(item):
+            toppings.append(item)
+    context = {
+        'title': 'Home',
+        'menu': menu,
+        'prices': price,
+        'toppings': toppings,
+        'sub_additions': sub_additions
+    }
+    return render(request, 'orders/home.html', context)
 
 
 # automatically generates the order_form.html page when navigated to
@@ -26,50 +58,21 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
     form_class = OrderForm
     success_url = reverse_lazy('orders-home')
 
-    # pass data into html page
-    def get_context_data(self, **kwargs):
-        context = super(CreateView, self).get_context_data(**kwargs)
-        # get menu data and pass into context
-        menu = {}
-        price = []
-        toppings = []
-        sub_additions = {}
+    # assign the current user as the author of the post
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
-        for item in Meal_Type.objects.all():
-            l = list(item.meal_addition.values_list('name', flat=True))
-            meal_additions_list = [str(i) for i in l]
-            sub_additions[item.name] = meal_additions_list
-        for item in Meal.objects.all():
-            l = list(Meal_Type.objects.filter(meal=item).order_by('name'))
-            meal_types_list = [str(i) for i in l]
-            menu[item.name] = meal_types_list
-        for item in Price.objects.all():
-            l = list(item.meal_type.values_list('name', flat=True))
-            meal_types_by_price_list = [str(i) for i in l]
-            temp = {}
-            temp['size'] = item.size
-            temp['price'] = item.price
-            temp['meal_types'] = meal_types_by_price_list
-            price.append(temp)
-        meal_additions = Meal_Addition.objects.all()
-        for item in list(meal_additions):
-            if "Pizza" in str(item):
-                toppings.append(item)
-        context['menu'] = menu
-        context['prices'] = price
-        context['toppings'] = toppings
-        context['sub_additions'] = sub_additions
-        return context
 
 # order form dropdown menu - meal types
 def load_meal_type(request):
-    print("test2")
     meal_id = request.GET.get('meal')
     meal_type = Meal_Type.objects.filter(meal_id=meal_id).order_by('name')
     context = {
         "meal_type": meal_type
     }
     return render(request, 'orders/dropdown_list_options.html', context)
+
 
 # order form dropdown menu - sizes
 def load_size(request):
@@ -79,6 +82,7 @@ def load_size(request):
         "size": size
     }
     return render(request, 'orders/dropdown_list_options.html', context)
+
 
 # order form dropdown menu - meal additions
 def load_meal_addition(request):
