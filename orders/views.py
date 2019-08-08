@@ -5,19 +5,26 @@ from django.urls import reverse_lazy
 from .models import Meal, Order, Meal_Type, Size, Meal_Addition, Price
 from .forms import OrderForm
 from django.template.defaulttags import register
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 # used to extract values from menu dictionary on the html page
 @register.filter
 def get_item(dictionary, key):
     return dictionary.get(key)
 
+
 # Create your views here.
 
+def home(request):
+    return render(request, 'orders/home.html', {'title': 'Home'})
+
+
 # automatically generates the order_form.html page when navigated to
-class OrderCreateView(CreateView):
+class OrderCreateView(LoginRequiredMixin, CreateView):
     model = Order
     form_class = OrderForm
-    success_url = reverse_lazy('order_add')
+    success_url = reverse_lazy('orders-home')
 
     # pass data into html page
     def get_context_data(self, **kwargs):
@@ -56,6 +63,7 @@ class OrderCreateView(CreateView):
 
 # order form dropdown menu - meal types
 def load_meal_type(request):
+    print("test2")
     meal_id = request.GET.get('meal')
     meal_type = Meal_Type.objects.filter(meal_id=meal_id).order_by('name')
     context = {

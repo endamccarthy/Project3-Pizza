@@ -1,120 +1,21 @@
 {% extends 'orders/base.html' %}
+{% load crispy_forms_tags %}
 {% block content %}
-  <div class="container-fluid">
-    <div class="row">
-      <div class="order-form col-md-5">
-        <div class="form-heading">
-          <h4>Place Your Order: </h4>
-        </div>
-        <form method="post" id="orderForm" data-meal_type-url="{% url 'ajax_load_meal_type' %}" data-size-url="{% url 'ajax_load_size' %}" 
-          data-meal_addition-url="{% url 'ajax_load_meal_addition' %}" novalidate>
-          {% csrf_token %}
-          <div class="form-row">
-            <div class="form-group col-md-12">
-              <label for="meal" class="col-md-4">Select Meal: </label>
-              <span id="meal" class="col-md-6">{{ form.meal }}</span>
+    <h2>Order Page</h2>
+    <div class="content-section">
+        <form method="POST" id="orderForm" data-meal_type-url="{% url 'ajax_load_meal_type' %}" data-size-url="{% url 'ajax_load_size' %}" 
+         data-meal_addition-url="{% url 'ajax_load_meal_addition' %}" novalidate>
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Create Order</legend>
+                <span id="meal">{{ form.meal|as_crispy_field }}</span>
+                <span id="meal-type">{{ form.meal_type|as_crispy_field }}</span>
+                <span id="size">{{ form.size|as_crispy_field }}</span>
+                <span id="meal-additions">{{ form.meal_addition|as_crispy_field }}</span>
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Add</button>
             </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group col-md-12">
-              <label for="meal-type" class="col-md-4">Select Meal Type: </label>
-              <span id="meal-type" class="col-md-6">{{ form.meal_type }}</span>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group col-md-12">
-              <label for="size" class="col-md-4">Select Size: </label>
-              <span id="size" class="col-md-6">{{ form.size }}</span>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group col-md-12">
-              <label for="meal-additions" class="col-md-4">Select Meal Additions: </label>
-              <span id="meal-additions" class="col-md-6">{{ form.meal_addition }}</span>
-            </div>
-          </div>
-          <div class="form-row">
-              <p class="col-md-6">Total Price: <span id="total-price"></span></p>
-              <button type="submit" class="btn btn-secondary col-md-3">Place Order</button>
-          </div>
         </form>
-      </div>
     </div>
-  </div>
-
-  {% if menu %}
-    <div class="container-fluid">
-      <div class="row">
-        <div class="menu col-md-7">
-          <table class="table table-bordered table-dark">
-            <thead>
-              <tr>
-                <th scope="row" colspan="3" id="menu-title">Menu</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for meal in menu %}
-                <tr>
-                  <th colspan="3">{{ meal }}</th>
-                </tr>
-                {% for mealType1 in menu|get_item:meal %}
-                  <tr>
-                    <td scope="row">{{ mealType1 }}</td>
-                    {% if prices %}
-                      {% for item in prices %}
-                        {% for mealType2 in item.meal_types %}
-                          {% if mealType2 == mealType1 %}
-                            <td>{{ item.size }} ${{ item.price }}</td>
-                          {% endif %}
-                        {% endfor %}
-                      {% endfor %}
-                    {% endif %}
-                  </tr>
-                  {% if "*" in mealType1 %}
-                    {% if sub_additions %}
-                      {% for item in sub_additions %}
-                        {% if "*" in item %}
-                          {% for item2 in sub_additions|get_item:item %}
-                            {% if "Cheese" in item2 %}
-                            {% else %}
-                              <tr>
-                                <td scope="row">&nbsp;&nbsp;&nbsp; - Add {{ item2 }}</td>
-                              </tr>
-                            {% endif %}
-                          {% endfor %}
-                        {% endif %}
-                      {% endfor %}
-                    {% endif %}
-                  {% endif %}
-                {% endfor %}
-                {% if meal == "Sub" %}
-                  <tr>
-                    <td scope="row">&nbsp;&nbsp;&nbsp; - Add Cheese to any sub (50c)</td>
-                  </tr>
-                {% endif %}
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-        {% if toppings %}
-          <div class="menu col-md-3">
-            <table class="table table-bordered table-dark">
-              <thead>
-                <tr>
-                  <th scope="row" colspan="3" id="toppings-title">Pizza Toppings</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for item in toppings %}
-                  <tr scope="row">
-                    <td>{{ item.name }}</td>
-                  </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        {% endif %}
-      </div>
-    </div>
-  {% endif %}
 {% endblock %}

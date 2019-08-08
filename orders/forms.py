@@ -16,6 +16,7 @@ class OrderForm(forms.ModelForm):
         # if a meal has been selected from the dropdown menu....
         if 'meal' in self.data:
             try:
+                print("test1")
                 meal_id = int(self.data.get('meal'))
                 self.fields['meal_type'].queryset = Meal_Type.objects.filter(meal_id=meal_id).order_by('meal')
             except (ValueError, TypeError):
