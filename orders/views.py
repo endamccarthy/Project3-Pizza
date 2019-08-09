@@ -58,7 +58,7 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
     form_class = OrderForm
     success_url = reverse_lazy('orders-home')
 
-    # assign the current user as the author of the post
+    # assign the current user as the owner of the order
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
@@ -92,3 +92,32 @@ def load_meal_addition(request):
         "meal_addition": meal_addition
     }
     return render(request, 'orders/dropdown_list_options.html', context)
+
+
+# 
+test = {}
+def load_price(request):
+    print('test1')
+    if (request.GET.get('meal_type')):
+        test['meal_type'] = request.GET.get('meal_type')
+        return render(request, 'orders/price.html')
+    if (request.GET.get('meal_addition')):
+        x = request.GET.get('meal_addition')
+        for item in x:
+            print(item)
+        print(request.GET.get('meal_addition'))
+        return render(request, 'orders/price.html')
+    if (request.GET.get('size')):
+        test['size'] = request.GET.get('size')
+        
+        # get the price for the meal type selected
+        meal_price = Price.objects.filter(meal_type=test['meal_type'], size=test['size'])
+        total_price = float()
+        for item in meal_price:
+            total_price = float(item.price)
+
+        #meal_addition = Meal_Addition.objects.filter(meal_type=meal_type).order_by('name')
+        context = {
+            "total_price": total_price
+        }
+        return render(request, 'orders/price.html', context)

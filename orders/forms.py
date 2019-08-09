@@ -1,5 +1,5 @@
 from django import forms
-from .models import Order, Meal_Type, Size, Meal_Addition, Price
+from .models import Order, Meal, Meal_Type, Size, Meal_Addition, Price
 
 class OrderForm(forms.ModelForm):
     class Meta:
@@ -20,8 +20,6 @@ class OrderForm(forms.ModelForm):
                 self.fields['meal_type'].queryset = Meal_Type.objects.filter(meal_id=meal_id).order_by('meal')
             except (ValueError, TypeError):
                 pass  # invalid input from the client; ignore and fallback to empty queryset
-        elif self.instance.pk:
-            self.fields['meal_type'].queryset = self.instance.meal.meal_type_set.order_by('meal')
         
         # if a meal type has been selected from the dropdown menu....
         if 'meal_type' in self.data:
@@ -39,10 +37,7 @@ class OrderForm(forms.ModelForm):
     def clean_meal_addition(self):
         meal_addition = self.cleaned_data['meal_addition']
         meal_type = self.cleaned_data['meal_type']
-        if 'size' in self.data:
-            size = self.cleaned_data['size']
-        else:
-            raise forms.ValidationError('You must select size')
+        size = self.cleaned_data['size']
         meal = str(self.cleaned_data['meal'])
 
         # if a pizza is selected then validate the number of toppings
