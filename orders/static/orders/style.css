@@ -71,6 +71,14 @@ table {
     color: #000000;
 }
 
+#price {
+    display: none;
+}
+
+#price-value {
+    display: inline-block;
+}
+
 .footer {
     position: relative;
     width: 100%;

@@ -16,7 +16,7 @@
                 <button id="add-to-basket" class="btn btn-outline-info" type="submit" disabled>Add To Basket</button>
             </div>
         </form>
-        <div id="price" style="display: none" data-price-url="{% url 'ajax_load_price' %}" >
+        <div id="price" data-price-url="{% url 'ajax_load_price' %}" >
             <p>Total Price: $<span id="price-value"></span></p>
         </div>
     </div>

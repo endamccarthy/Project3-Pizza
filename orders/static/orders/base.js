@@ -2,12 +2,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // order page dropdown menu functionality
     $("#id_meal").change(function () {
+        $("#price").hide();
         var mealId = $(this).val();
+        // if a meal is actually selected instead of the blank default value
         if (mealId != "") {
+            // set various urls
             var url_meal_type = $("#orderForm").attr("data-meal_type-url");
             var url_size = $("#orderForm").attr("data-size-url");
             var url_meal_addition = $("#orderForm").attr("data-meal_addition-url");
-            // once a meal is seleceted then send ajax request for the meal types data
+            // once a meal is selected then send ajax request for the meal types data
             $.ajax({
                 url: url_meal_type,
                 data: {
@@ -17,6 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     $("#id_meal_type").html(data);
                 }
             });
+            // reset the size menu to blank
             $.ajax({
                 url: url_size,
                 data: {
@@ -26,6 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     $("#id_size").html(data);
                 }
             });
+            // reset the additions menu to blank
             $.ajax({
                 url: url_meal_addition,
                 data: {
@@ -36,6 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
         }
+        // if the blank default value is selected for meal, reset all menus to blank
         else {
             var url_meal_type = $("#orderForm").attr("data-meal_type-url");
             var url_size = $("#orderForm").attr("data-size-url");
@@ -70,6 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
         };
     });
     $("#id_meal_type").change(function () {
+        $("#price").hide();
         var url_size = $("#orderForm").attr("data-size-url");
         var url_meal_addition = $("#orderForm").attr("data-meal_addition-url");
         var meal_typeId = $(this).val();
@@ -120,14 +127,16 @@ document.addEventListener("DOMContentLoaded", () => {
         var url_price = $("#price").attr("data-price-url");
         var meal_additionId = [];
         meal_additionId.push($(this).val());
-        console.log(meal_additionId)
+        var json_string = JSON.stringify(meal_additionId);
         $.ajax({
             url: url_price,
             traditional: true,
             data: {
-                'meal_addition': meal_additionId
+                'meal_addition': json_string
             },
-            success: function () {}
+            success: function (data) {
+                $("#price-value").html(data);
+            }
         });
     });
 })

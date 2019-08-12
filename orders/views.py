@@ -6,6 +6,7 @@ from .models import Meal, Order, Meal_Type, Size, Meal_Addition, Price
 from .forms import OrderForm
 from django.template.defaulttags import register
 from django.contrib.auth.mixins import LoginRequiredMixin
+import json
 
 
 # used to extract values from menu dictionary on the html page
@@ -95,29 +96,37 @@ def load_meal_addition(request):
 
 
 # 
-test = {}
+temp = {}
+temp1 = {}
 def load_price(request):
-    print('test1')
     if (request.GET.get('meal_type')):
-        test['meal_type'] = request.GET.get('meal_type')
+        temp['meal_type'] = request.GET.get('meal_type')
         return render(request, 'orders/price.html')
-    if (request.GET.get('meal_addition')):
-        x = request.GET.get('meal_addition')
-        for item in x:
-            print(item)
-        print(request.GET.get('meal_addition'))
-        return render(request, 'orders/price.html')
+    
     if (request.GET.get('size')):
-        test['size'] = request.GET.get('size')
-        
+        temp['size'] = request.GET.get('size')
         # get the price for the meal type selected
-        meal_price = Price.objects.filter(meal_type=test['meal_type'], size=test['size'])
-        total_price = float()
+        meal_price = Price.objects.filter(meal_type=temp['meal_type'], size=temp['size'])
+        
         for item in meal_price:
+            temp1['price'] = float(item.price)
+            temp['price'] = temp1['price']
             total_price = float(item.price)
-
-        #meal_addition = Meal_Addition.objects.filter(meal_type=meal_type).order_by('name')
         context = {
-            "total_price": total_price
+            "total_price": temp['price']
+        }
+        return render(request, 'orders/price.html', context)
+
+    if (request.GET.get('meal_addition')):
+        meal_additions = json.loads(request.GET.get('meal_addition'))
+        for item in meal_additions:
+            temp2 = {'price': 0.0}
+            for x in item:
+                price = Meal_Addition.objects.get(pk=x)
+                if (price.price):
+                    temp2['price'] = (temp2['price'] + price.price)
+            temp['price'] = (temp1['price'] + temp2['price'])
+        context = {
+            "total_price": temp['price']
         }
         return render(request, 'orders/price.html', context)
