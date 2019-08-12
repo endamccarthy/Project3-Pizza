@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
             var url_meal_type = $("#orderForm").attr("data-meal_type-url");
             var url_size = $("#orderForm").attr("data-size-url");
             var url_meal_addition = $("#orderForm").attr("data-meal_addition-url");
-            // once a meal is selected then send ajax request for the meal types data
+            // once a meal is selected then send ajax request for the meal types menu
             $.ajax({
                 url: url_meal_type,
                 data: {
@@ -75,12 +75,12 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         };
     });
+    // once a meal type is selected then send ajax requests for the size menu and reset the additions menu
     $("#id_meal_type").change(function () {
         $("#price").hide();
         var url_size = $("#orderForm").attr("data-size-url");
         var url_meal_addition = $("#orderForm").attr("data-meal_addition-url");
         var meal_typeId = $(this).val();
-        // once a meal type is seleceted then send ajax requests for both the size and additions data
         $.ajax({
             url: url_size,
             data: {
@@ -90,25 +90,29 @@ document.addEventListener("DOMContentLoaded", () => {
                 $("#id_size").html(data);
             }
         });
+        // reset the additions menu to blank
         $.ajax({
             url: url_meal_addition,
             data: {
-                'meal_type': meal_typeId
+                'meal_type': 0
             },
             success: function (data) {
                 $("#id_meal_addition").html(data);
             }
         });
-        var url_price = $("#price").attr("data-price-url");
-        $.ajax({
-            url: url_price,
-            data: {
-                'meal_type': meal_typeId,
-            },
-            success: function () {}
-        });
     });
+    // once a size has been selected the price can be got and the add to basket button can be enabled
     $("#id_size").change(function () {
+        // send ajax request for the additions menu
+        var url_meal_addition = $("#orderForm").attr("data-meal_addition-url");
+        $.ajax({
+            url: url_meal_addition,
+            data: {},
+            success: function (data) {
+                $("#id_meal_addition").html(data);
+            }
+        });
+        // send ajax request for the price (not including any additions)
         $("#price").show();
         var url_price = $("#price").attr("data-price-url");
         var sizeId = $(this).val();
@@ -123,6 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         document.getElementById("add-to-basket").disabled = false;
     });
+    // if any of the selected meal additions have a cost (subs) then this will be added to the price
     $("#id_meal_addition").change(function () {
         var url_price = $("#price").attr("data-price-url");
         var meal_additionId = [];

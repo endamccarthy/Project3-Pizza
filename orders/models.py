@@ -37,7 +37,7 @@ class Meal_Type(models.Model):
 
 
 class Price(models.Model):
-    price = models.FloatField(default = 0)
+    price = models.FloatField(default=0)
     meal_type = models.ManyToManyField(Meal_Type)
     size = models.ForeignKey(Size, on_delete=models.CASCADE)
     
@@ -55,6 +55,7 @@ class Order(models.Model):
     size = models.ForeignKey(Size, on_delete=models.CASCADE)
     meal_addition = models.ManyToManyField(Meal_Addition, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    price = models.FloatField(default=0)
 
     def __str__(self):
-        return f"{self.size} {self.meal_type}"
+        return f"{self.size} {self.meal_type} ({self.price})"
