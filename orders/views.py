@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic import CreateView, DetailView
 from django.urls import reverse_lazy
-from .models import Meal, Order, Meal_Type, Size, Meal_Addition, Price
+from .models import Meal, Item, Meal_Type, Size, Meal_Addition, Price
 from .forms import OrderForm
 from django.template.defaulttags import register
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -56,7 +56,7 @@ def home(request):
 # automatically generates the order_form.html page when navigated to
 temp = {}
 class OrderCreateView(LoginRequiredMixin, CreateView):
-    model = Order
+    model = Item
     form_class = OrderForm
     success_url = reverse_lazy('orders-home')
 

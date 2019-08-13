@@ -49,13 +49,13 @@ class Price(models.Model):
         return f"{self.size} ({meal_types_list}) (${self.price})"
 
 
-class Order(models.Model):
+class Item(models.Model):
     meal = models.ForeignKey(Meal, on_delete=models.CASCADE)
     meal_type = models.ForeignKey(Meal_Type, on_delete=models.CASCADE)
     size = models.ForeignKey(Size, on_delete=models.CASCADE)
     meal_addition = models.ManyToManyField(Meal_Addition, blank=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
     price = models.FloatField(default=0)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.size} {self.meal_type} ({self.price})"
+        return f"{self.size} {self.meal_type} (${self.price})"

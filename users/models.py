@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from PIL import Image
-
+from orders.models import Item
 
 # Create your models here.
 class Profile(models.Model):
@@ -19,3 +19,11 @@ class Profile(models.Model):
             output_size = (300, 300)
             img.thumbnail(output_size)
             img.save(self.image.path)
+
+
+class Cart(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    item = models.ManyToManyField(Item, blank=True)
+
+    def __str__(self):
+        return f'{self.user.username}'

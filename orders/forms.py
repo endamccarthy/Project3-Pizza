@@ -1,9 +1,9 @@
 from django import forms
-from .models import Order, Meal, Meal_Type, Size, Meal_Addition, Price
+from .models import Item, Meal, Meal_Type, Size, Meal_Addition, Price
 
 class OrderForm(forms.ModelForm):
     class Meta:
-        model = Order
+        model = Item
         fields = ('meal', 'meal_type', 'size', 'meal_addition')
 
     def __init__(self, *args, **kwargs):
@@ -62,6 +62,5 @@ class OrderForm(forms.ModelForm):
         if 'Sub' in meal:
             for item in meal_addition:
                 total_price = total_price + float(item.price)
-
-        print(total_price)
+                
         return meal_addition
