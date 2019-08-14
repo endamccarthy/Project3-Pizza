@@ -72,16 +72,7 @@ def checkout(request, **kwargs):
 
 
 @login_required()
-def clear_cart(request):
-    item_to_delete = OrderItem.objects.all()
-    if item_to_delete.exists():
-        item_to_delete.delete()
-        messages.info(request, "Order has been Placed!")
-    return redirect('orders-home')
-
-
-@login_required()
-def update_transaction_records(request, token):
+def update_transaction_records(request):
     # get the order being processed
     order_to_purchase = get_user_pending_order(request)
 
@@ -100,19 +91,20 @@ def update_transaction_records(request, token):
     user_cart = get_object_or_404(Cart, user=request.user)
     # get the products from the items
     order_products = [item.item for item in order_items]
-    user_cart.items.add(*order_products)
+    user_cart.item.add(*order_products)
     user_cart.save()
 
     # create a transaction
+    '''
     transaction = Transaction(cart=request.user.cart, token=token, order_id=order_to_purchase.id, 
                               amount=order_to_purchase.get_cart_total(), success=True)
     # save the transcation (otherwise doesn't exist)
     transaction.save()
-
+    '''
     # send an email to the customer
     # look at tutorial on how to send emails with sendgrid
     messages.info(request, "Thank you! Your purchase was successful!")
-    return redirect(reverse('orders:my_history'))
+    return redirect(reverse('orders-history'))
 
 
 def success(request, **kwargs):

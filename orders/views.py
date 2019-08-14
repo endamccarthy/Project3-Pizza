@@ -136,10 +136,10 @@ def load_price(request):
         return render(request, 'orders/price.html', context)
 
 
-def my_history(request):
-    my_user_history = Cart.objects.filter(user=request.user).first()
-    my_orders = Order.objects.filter(is_ordered=True, owner=my_user_history)
+def order_history(request):
+    my_user_cart = Cart.objects.filter(user=request.user).first()
+    my_orders = Order.objects.filter(is_ordered=True, owner=my_user_cart)
     context = {
         'my_orders': my_orders
     }
-    return render(request, 'orders/history.html', context)
+    return render(request, "orders/history.html", context)

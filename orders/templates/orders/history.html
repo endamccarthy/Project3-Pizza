@@ -9,24 +9,24 @@
                 <th>Price</th>
             </tr>
             {% for order in my_orders %}
-            <tr>
-                <td>{{ order.date_ordered }}</td>
-                <td>{{ order.ref_code }}</td>
-                <td>
-                    {% for item in order.items.all %}
-                        {{ item.item }}
-                    {% endfor %}
-                </td>
-                <td>${{ order.get_cart_total }}</td>
-            </tr>
+                <tr>
+                    <td>{{ order.date_ordered }}</td>
+                    <td>{{ order.ref_code }}</td>
+                    <td>
+                        {% for item in order.items.all %}
+                            {{ item.item }}
+                        {% endfor %}
+                    </td>
+                    <td>${{ order.get_cart_total }}</td>
+                </tr>
             {% empty %}
                 <tr>
-                    <td colspan= 4> You have no orders.</td>
+                    <td colspan="4"> You have no orders.</td>
                 </tr>
             {% endfor %}
             <tr>
                 <td colspan="4">
-                    <a href="{% url 'orders:orders-home' %}" class="btn btn-warning pull-left">
+                    <a href="{% url 'orders-home' %}" class="btn btn-warning pull-left">
                         {% if not order %}Continue Shopping{% else %}Add Items to Cart {% endif %}
                     </a>
                 </td>
