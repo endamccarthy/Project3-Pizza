@@ -56,6 +56,7 @@ class Item(models.Model):
     meal_addition = models.ManyToManyField(Meal_Addition, blank=True)
     price = models.FloatField(default=0)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
 
     def __str__(self):
         return f"{self.size} {self.meal_type} (${self.price})"

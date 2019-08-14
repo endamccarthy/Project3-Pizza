@@ -1,9 +1,11 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import CreateView, DetailView
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from .models import Meal, Item, Meal_Type, Size, Meal_Addition, Price
 from .forms import OrderForm
+from users.models import Cart
+from shopping_cart.models import Order
 from django.template.defaulttags import register
 from django.contrib.auth.mixins import LoginRequiredMixin
 import json
@@ -58,7 +60,7 @@ temp = {}
 class OrderCreateView(LoginRequiredMixin, CreateView):
     model = Item
     form_class = OrderForm
-    success_url = reverse_lazy('orders-home')
+    success_url = 'http://127.0.0.1:8000/add-to-cart/'
 
     def form_valid(self, form):
         # assign the current user as the owner of the order
@@ -132,3 +134,12 @@ def load_price(request):
             "total_price": temp['price']
         }
         return render(request, 'orders/price.html', context)
+
+
+def my_history(request):
+    my_user_history = Cart.objects.filter(user=request.user).first()
+    my_orders = Order.objects.filter(is_ordered=True, owner=my_user_history)
+    context = {
+        'my_orders': my_orders
+    }
+    return render(request, 'orders/history.html', context)

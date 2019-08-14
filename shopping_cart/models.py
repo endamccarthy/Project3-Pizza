@@ -12,7 +12,7 @@ class OrderItem(models.Model):
     date_ordered = models.DateTimeField(null=True)
 
     def __str__(self):
-        return self.item.name
+        return str(self.item)
 
 
 class Order(models.Model):

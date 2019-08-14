@@ -5,8 +5,9 @@ from django.urls import reverse
 from django.shortcuts import render, redirect, get_object_or_404
 from users.models import Cart
 from orders.models import Item
-from shopping_cart.extras import generate_order_id, transact, generate_client_token
+from shopping_cart.extras import generate_order_id
 from shopping_cart.models import OrderItem, Order, Transaction
+import datetime
 
 
 # Create your views here.
@@ -22,11 +23,11 @@ def get_user_pending_order(request):
 
 
 @login_required()
-def add_to_cart(request, **kwargs):
+def add_to_cart(request):
     # get the user cart
     user_cart = get_object_or_404(Cart, user=request.user)
-    # filter items by id
-    item = Item.objects.filter(id=kwargs.get('item_id', "")).first()
+    # filter items by latest
+    item = Item.objects.filter(user=request.user).order_by('timestamp').last()
 
     # create orderItem of the selected product
     order_item, status = OrderItem.objects.get_or_create(item=item)
@@ -39,8 +40,8 @@ def add_to_cart(request, **kwargs):
         user_order.save()
 
     # show confirmation message and redirect back to the same page
-    messages.info(request, "item added to cart")
-    return redirect(reverse('orders:orders-home'))
+    messages.info(request, "Item added to cart")
+    return redirect('orders-home')
 
 
 @login_required()
@@ -69,3 +70,51 @@ def checkout(request, **kwargs):
     }
     return render(request, 'shopping_cart/checkout.html', context)
 
+
+@login_required()
+def clear_cart(request):
+    item_to_delete = OrderItem.objects.all()
+    if item_to_delete.exists():
+        item_to_delete.delete()
+        messages.info(request, "Order has been Placed!")
+    return redirect('orders-home')
+
+
+@login_required()
+def update_transaction_records(request, token):
+    # get the order being processed
+    order_to_purchase = get_user_pending_order(request)
+
+    # update the placed order
+    order_to_purchase.is_ordered=True
+    order_to_purchase.date_ordered=datetime.datetime.now()
+    order_to_purchase.save()
+    
+    # get all items in the order - generates a queryset
+    order_items = order_to_purchase.items.all()
+
+    # update order items
+    order_items.update(is_ordered=True, date_ordered=datetime.datetime.now())
+
+    # add products to user cart
+    user_cart = get_object_or_404(Cart, user=request.user)
+    # get the products from the items
+    order_products = [item.item for item in order_items]
+    user_cart.items.add(*order_products)
+    user_cart.save()
+
+    # create a transaction
+    transaction = Transaction(cart=request.user.cart, token=token, order_id=order_to_purchase.id, 
+                              amount=order_to_purchase.get_cart_total(), success=True)
+    # save the transcation (otherwise doesn't exist)
+    transaction.save()
+
+    # send an email to the customer
+    # look at tutorial on how to send emails with sendgrid
+    messages.info(request, "Thank you! Your purchase was successful!")
+    return redirect(reverse('orders:my_history'))
+
+
+def success(request, **kwargs):
+    # a view signifying the transcation was successful
+    return render(request, 'shopping_cart/purchase_success.html', {})
