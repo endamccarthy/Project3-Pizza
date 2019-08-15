@@ -8,7 +8,9 @@ from orders.models import Item
 from shopping_cart.extras import generate_order_id
 from shopping_cart.models import OrderItem, Order, Transaction
 import datetime
+import stripe
 
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 # Create your views here.
 
@@ -63,16 +65,29 @@ def order_details(request, **kwargs):
 
 
 @login_required()
-def checkout(request, **kwargs):
+def checkout(request):
     existing_order = get_user_pending_order(request)
+    publishKey = settings.STRIPE_PUBLISHABLE_KEY
+    if request.method == 'POST':
+        try:
+            token = request.POST['stripeToken']
+            charge = stripe.Charge.create(amount=100*existing_order.get_cart_total(), currency='usd', description='Example charge', source=token)
+            print(charge)
+            #return redirect('orders-home')
+            return redirect(reverse('shopping_cart:update_records', kwargs={'token': token}))
+        except stripe.CardError as e:
+            messages.info(request, "Your card has been declined.")
+
     context = {
-        'order': existing_order
+        'order': existing_order,
+        'STRIPE_PUBLISHABLE_KEY': publishKey,
+        'title': 'Checkout'
     }
     return render(request, 'shopping_cart/checkout.html', context)
 
 
 @login_required()
-def update_transaction_records(request):
+def update_transaction_records(request, token):
     # get the order being processed
     order_to_purchase = get_user_pending_order(request)
 
@@ -95,12 +110,10 @@ def update_transaction_records(request):
     user_cart.save()
 
     # create a transaction
-    '''
-    transaction = Transaction(cart=request.user.cart, token=token, order_id=order_to_purchase.id, 
-                              amount=order_to_purchase.get_cart_total(), success=True)
+    transaction = Transaction(cart=request.user.cart, token=token, order_id=order_to_purchase.id, amount=order_to_purchase.get_cart_total(), success=True)
     # save the transcation (otherwise doesn't exist)
     transaction.save()
-    '''
+
     # send an email to the customer
     # look at tutorial on how to send emails with sendgrid
     messages.info(request, "Thank you! Your purchase was successful!")
