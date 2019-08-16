@@ -56,11 +56,6 @@ form.addEventListener('submit', function(event) {
     });
 });
 
-var successElement = document.getElementById('stripe-token-handler');
-document.querySelector('.wrapper').addEventListener('click', function() {
-    successElement.className = 'is-hidden';
-});
-
 // Submit the form with the token ID.
 function stripeTokenHandler(token) {
     // Insert the token ID into the form so it gets submitted to the server

@@ -3,7 +3,7 @@
 .navbar {
     min-height: 60px;
     padding: 0px 100px;
-    background: #8ed2ff;
+    background: #338cc7;
     border: none;
     border-radius: 0;
     margin-bottom: 20px;
@@ -17,7 +17,7 @@ body {
 }
 
 .site-header .navbar-nav .nav-link {
-    color: #6c7072;
+    color: #cbd6db;
 }
 
 .site-header .navbar-nav .nav-link:hover {
@@ -51,22 +51,28 @@ body {
     margin-top: 50px;
 }
 
-table {
-    background: #ffe7e9
+.table-menu {
+    background: #f8f0f1;
+    font-size: 14px;
 }
 
 .table th {
-    text-align: center;
-    color: #6c7072;
-    background: #8ed2ff;
+    text-align: left;
+    font-size: 16px;
+    color: #000000;
+    background: #d9d4e4;
 }
 
 #menu-title {
+    text-align: center;
+    font-size: 20px;
     background: darkgray;
     color: #000000;
 }
 
 #toppings-title {
+    text-align: center;
+    font-size: 20px;
     background: darkgray;
     color: #000000;
 }
@@ -94,10 +100,10 @@ table {
 ----------------------------------------------------- */
 
 .stripe-label {
-    font-family: "Helvetica Neue", Helvetica, sans-serif;
+    color: gray;
     font-size: 16px;
     font-variant: normal;
-    padding: 0;
+    padding: 2px;
     margin: 0;
     -webkit-font-smoothing: antialiased;
 }
@@ -125,15 +131,13 @@ table {
     margin-top: 28px;
 }
 
-.stripe-button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 7px 14px rgba(50, 50, 93, .10), 0 3px 6px rgba(0, 0, 0, .08);
-    background-color: #43458b;
-}
 
 .stripe-form {
-    padding: 30px;
-    height: 120px;
+    background: #d9d4e4;
+    padding: 20px 20px;
+    padding-bottom: 50px;
+    border: 1px solid #dddddd;
+    border-radius: 3px;
 }
 
 #card-errors {

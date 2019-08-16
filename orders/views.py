@@ -61,6 +61,7 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
     model = Item
     form_class = OrderForm
     success_url = 'http://127.0.0.1:8000/add-to-cart/'
+    context_object_name = 'Create'
 
     def form_valid(self, form):
         # assign the current user as the owner of the order

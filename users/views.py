@@ -15,7 +15,11 @@ def register(request):
             return redirect('login')
     else:
         form = UserRegisterForm()
-    return render(request, 'users/register.html', {'form': form})
+    context = {
+        'form': form,
+        'title': 'Register'
+    }
+    return render(request, 'users/register.html', context)
 
 
 # update a users profile (note use of login decorator) 
@@ -35,7 +39,8 @@ def profile(request):
         p_form = ProfileUpdateForm(instance=request.user.profile)
     context = {
         'u_form': u_form,
-        "p_form": p_form
+        "p_form": p_form,
+        'title': 'My Profile'
     }
     return render(request, 'users/profile.html', context)
 

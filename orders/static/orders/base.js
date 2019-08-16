@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     });
-    // once a size has been selected the price can be got and the add to basket button can be enabled
+    // once a size has been selected the price can be got and the add to cart button can be enabled
     $("#id_size").change(function () {
         // send ajax request for the additions menu
         var url_meal_addition = $("#orderForm").attr("data-meal_addition-url");
@@ -125,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 $("#price-value").html(data);
             }
         });
-        document.getElementById("add-to-basket").disabled = false;
+        document.getElementById("add-to-cart").disabled = false;
     });
     // if any of the selected meal additions have a cost (subs) then this will be added to the price
     $("#id_meal_addition").change(function () {

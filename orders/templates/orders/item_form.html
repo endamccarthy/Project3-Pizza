@@ -13,7 +13,7 @@
                 <span id="meal-additions">{{ form.meal_addition|as_crispy_field }}</span>
             </fieldset>
             <div class="form-group">
-                <button id="add-to-basket" class="btn btn-outline-info" type="submit" disabled>Add To Basket</button>
+                <button id="add-to-cart" class="btn btn-outline-secondary" type="submit" disabled>Add To Cart</button>
             </div>
         </form>
         <div id="price" data-price-url="{% url 'ajax_load_price' %}" >

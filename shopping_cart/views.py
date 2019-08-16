@@ -42,8 +42,11 @@ def add_to_cart(request):
         user_order.save()
 
     # show confirmation message and redirect back to the same page
-    messages.info(request, "Item added to cart")
-    return redirect('orders-home')
+    messages.success(request, "Item added to cart!")
+    context = {
+        'title': 'Cart'
+    }
+    return redirect('shopping_cart:order_summary')
 
 
 @login_required()
@@ -51,7 +54,7 @@ def delete_from_cart(request, item_id):
     item_to_delete = OrderItem.objects.filter(pk=item_id)
     if item_to_delete.exists():
         item_to_delete[0].delete()
-        messages.info(request, "Item has been deleted")
+        messages.info(request, "Item has been deleted!")
     return redirect(reverse('shopping_cart:order_summary'))
 
 
@@ -59,7 +62,8 @@ def delete_from_cart(request, item_id):
 def order_details(request, **kwargs):
     existing_order = get_user_pending_order(request)
     context = {
-        'order': existing_order
+        'order': existing_order,
+        'title': 'Cart'
     }
     return render(request, 'shopping_cart/order_summary.html', context)
 
@@ -71,12 +75,10 @@ def checkout(request):
     if request.method == 'POST':
         try:
             token = request.POST['stripeToken']
-            charge = stripe.Charge.create(amount=100*existing_order.get_cart_total(), currency='usd', description='Example charge', source=token)
-            print(charge)
-            #return redirect('orders-home')
+            charge = stripe.Charge.create(amount=int(100*existing_order.get_cart_total()), currency='usd', description='Example charge', source=token)
             return redirect(reverse('shopping_cart:update_records', kwargs={'token': token}))
         except stripe.CardError as e:
-            messages.info(request, "Your card has been declined.")
+            messages.warning(request, "Your card has been declined.")
 
     context = {
         'order': existing_order,
@@ -116,7 +118,7 @@ def update_transaction_records(request, token):
 
     # send an email to the customer
     # look at tutorial on how to send emails with sendgrid
-    messages.info(request, "Thank you! Your purchase was successful!")
+    messages.success(request, "Thank you! Your purchase was successful!")
     return redirect(reverse('orders-history'))
 
 
