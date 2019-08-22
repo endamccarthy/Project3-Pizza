@@ -1,8 +1,8 @@
 {% extends 'orders/base.html' %}
 {% block content %}
-    <div class="content-section">
-        <table class="table table-hover table-bordered text-center">
-            <tr class="text-center">
+    <div>
+        <table class="table table-hover table-bordered">
+            <tr>
                 <th>Date Ordered</th>
                 <th>Reference Code</th>
                 <th>Items</th>
@@ -13,9 +13,13 @@
                     <td>{{ order.date_ordered }}</td>
                     <td>{{ order.ref_code }}</td>
                     <td>
-                        {% for item in order.items.all %}
-                            {{ item.item }}
-                        {% endfor %}
+                        <ul>
+                            {% for item in order.items.all %}
+                                <li>
+                                    {{ item.item }}
+                                </li>
+                            {% endfor %}
+                        </ul>
                     </td>
                     <td>${{ order.get_cart_total }}</td>
                 </tr>

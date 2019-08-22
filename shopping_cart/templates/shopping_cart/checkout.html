@@ -16,6 +16,16 @@
                     {% endfor %}
                 </td>
             </tr>
+            <tr>
+                {% if order.get_cart_total != None %}
+                    <td>
+                        <strong class="pull-right">Order Total:</strong>
+                    </td>
+                    <td>
+                        $<strong>{{ order.get_cart_total }}</strong>
+                    </td>
+                {% endif %}
+            </tr>
         </table>
     </div>
     <div>
@@ -59,6 +69,14 @@
             </div>
             <button class="stripe-button">Submit Payment</button>
         </form>
+    </div>
+    <div>
+        </br>
+        <p>For testing purposes the folowing card details can be entered:</p>
+        <strong>Number: </strong>4242 4242 4242 4242</br>
+        <strong>Expiry Date: </strong>Any date in the future</br>
+        <strong>CVC: </strong>Any 3 numbers</br>
+        <strong>ZIP: </strong>Any 5 numbers</br>
     </div>
     <div id="stripe-token-handler" class="is-hidden">Success! Got token: <span class="token"></span></div>
     
