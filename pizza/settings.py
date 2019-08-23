@@ -147,9 +147,9 @@ if DEBUG:
     STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY')
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
 else:
-    # live keys
-    STRIPE_PUBLISHABLE_KEY = ''
-    STRIPE_SECRET_KEY = ''
+    # live keys (no need for live keys, use same test keys)
+    STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY')
+    STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
 
 # Django AllAuth Settings
 AUTHENTICATION_BACKENDS = (
