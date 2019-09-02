@@ -1,6 +1,7 @@
 ## Project 3 - Pizza
 ### Enda McCarthy
 #### Web Programming with Python and JavaScript
+#### August 2019
 
 Click [here](https://www.endamccarthy.com) to view website.
 
