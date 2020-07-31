@@ -3,8 +3,6 @@
 #### Web Programming with Python and JavaScript
 #### August 2019
 
-Click [here](https://www.endamccarthy.com) to view website.
-
 This is a food ordering website. Users are required to register and login before they can place an order.
 
 Once logged in the user can select and customize their order and add it to the shopping cart. They can then checkout using the dummy credit card information provided.
