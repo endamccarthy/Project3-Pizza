@@ -11,7 +11,7 @@ The project was created using the Django framework for Python.
 
 Django admin allows a superuser access to the menu content and the user profiles. The superuser can assign certain users as staff and give them limited permissions in the admin page. The staff will only have the ability to modify the menu content and the prices.
 
-This can be seen by logging into the admin page [here](https://www.endamccarthy.com/admin/) as a staff member using the following login details:</br>
+This can be seen by logging into the admin page as a staff member using the following login details:</br>
 <strong>Username:</strong> staff</br><strong>Password:</strong> Testing1234</strong>
 
 
